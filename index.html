@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ADEPT-15 Format Practice</title>
+<style>
+
+*{box-sizing:border-box}
+:root{
+  --paper:#F6F5F2; --ink:#15171B; --ink2:#4A4F57; --ink3:#878D96;
+  --rule:#C9C7C0; --rule2:#E4E2DC;
+  --mag:#B01A5F; --magsoft:#F4E3EA;
+  --steel:#2C5875; --steelsoft:#E1E9EF;
+  --amber:#A0650B; --ambersoft:#F7ECDA;
+  --green:#2C6A4C; --greensoft:#E0EBE4;
+  --red:#93211F;
+}
+html,body{margin:0;padding:0;background:var(--paper)}
+body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:820px;margin:0 auto;padding:0 0 70px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.strip{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);display:flex;flex-wrap:wrap;
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:11px;letter-spacing:.09em;
+  text-transform:uppercase;background:var(--paper);position:sticky;top:0;z-index:20}
+.strip>div{padding:9px 12px;border-right:1px solid var(--rule);display:flex;align-items:center;gap:8px}
+.strip>div:last-child{border-right:0;margin-left:auto}
+.strip b{font-weight:700;letter-spacing:.14em}
+.bar{flex:1;min-width:80px;padding:0!important;border-right:0!important}
+.bar i{display:block;height:100%;background:var(--rule2)}
+.bar i u{display:block;height:100%;background:var(--mag);transition:width .2s}
+.eyebrow{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:10.5px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+h1{font-size:31px;line-height:1.1;letter-spacing:-.022em;font-weight:700;margin:0}
+h2{font-size:12.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;margin:0 0 14px;
+  padding-bottom:7px;border-bottom:1px solid var(--ink);
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+h3{margin:0 0 5px;font-size:14.5px;font-weight:700}
+p{margin:0 0 12px;color:var(--ink2);font-size:14.5px}
+section{padding:26px 20px 6px}
+a{color:var(--mag)}
+.pair{border:1px solid var(--rule);background:#fff;border-radius:2px;margin-bottom:14px;overflow:hidden}
+.pair>.ph{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;
+  border-bottom:1px solid var(--rule2);background:var(--paper);
+  font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+.pair.done>.ph{color:var(--green)}
+.opt{display:flex;width:100%;text-align:left;cursor:pointer;border:0;border-bottom:1px solid var(--rule2);
+  background:#fff;padding:0;font:inherit;align-items:stretch}
+.opt:hover{background:var(--paper)}
+.opt:focus-visible{outline:2px solid var(--mag);outline-offset:-2px}
+.opt .tag{flex:0 0 40px;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--rule2);
+  background:var(--paper);font-family:ui-monospace,monospace;font-size:12px;font-weight:700;color:var(--ink3)}
+.opt .txt{padding:14px 15px;font-size:15.5px;line-height:1.42;color:var(--ink)}
+.opt[data-on="1"]{background:var(--magsoft)}
+.opt[data-on="1"] .tag{background:var(--mag);color:#fff;border-right-color:var(--mag)}
+.seg{display:flex;border-top:1px solid var(--rule2)}
+.seg button{flex:1;padding:10px 4px;background:#fff;border:0;border-right:1px solid var(--rule2);
+  font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;color:var(--ink3)}
+.seg button:last-child{border-right:0}
+.seg button:hover{background:var(--paper);color:var(--ink2)}
+.seg button[data-on="1"]{background:var(--ink);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--mag);outline-offset:-2px}
+.seg.off{opacity:.3;pointer-events:none}
+.btn{border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;padding:12px 22px;border-radius:2px;
+  font-family:ui-monospace,monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase}
+.btn:disabled{opacity:.25;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:focus-visible{outline:2px solid var(--mag);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:20px}
+.cdi{display:grid;grid-template-columns:150px 1fr 42px;align-items:center;gap:10px;margin-bottom:8px}
+.cdi .nm{font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
+.cdi .track{position:relative;height:20px;border-top:1px solid var(--rule2);border-bottom:1px solid var(--rule2);background:#fff}
+
+.cdi .dot{position:absolute;top:2px;bottom:2px;width:3px;background:var(--mag)}
+.cdi .val{font-family:ui-monospace,monospace;font-size:12.5px;font-weight:700;text-align:right}
+.cdi.asp{margin-bottom:1px}
+.cdi.big .nm{font-size:11.5px;font-weight:700;color:var(--ink)}
+.cdi.big .track{height:26px}
+.poles{display:grid;grid-template-columns:150px 1fr 40px;gap:10px}
+.poles{margin:0 0 18px}
+.poles div:nth-child(2){display:flex;justify-content:space-between;font-family:ui-monospace,monospace;
+  font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.flag{border-left:3px solid var(--rule);padding:12px 0 12px 14px;margin-bottom:14px}
+.flag p{margin:0;font-size:13.5px}
+.flag[data-s="red"]{border-left-color:var(--red)}
+.flag[data-s="amber"]{border-left-color:var(--amber)}
+.flag[data-s="note"]{border-left-color:var(--steel)}
+.pill{display:inline-block;font-family:ui-monospace,monospace;font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;padding:2px 6px;border-radius:2px;margin-right:8px;vertical-align:2px}
+.pill[data-s="red"]{background:var(--red);color:#fff}
+.pill[data-s="amber"]{background:var(--ambersoft);color:var(--amber)}
+.pill[data-s="note"]{background:var(--steelsoft);color:var(--steel)}
+.miss{border-top:1px solid var(--rule2);padding:12px 0;font-size:14px}
+.miss .q{font-family:ui-monospace,monospace;font-size:10.5px;color:var(--ink3);letter-spacing:.08em}
+.miss .you{color:var(--ink2);margin-top:4px}
+.miss .go{color:var(--mag);font-weight:600;margin-top:2px}
+.lenrow{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:560px){.lenrow{grid-template-columns:1fr 1fr}}
+.len{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--rule);
+  background:#fff;padding:13px 15px;border-radius:2px;cursor:pointer;text-align:left;font:inherit}
+.len:hover{border-color:var(--ink3)}
+.len[data-on="1"]{border-color:var(--mag);box-shadow:inset 3px 0 0 var(--mag);background:var(--magsoft)}
+.len:focus-visible{outline:2px solid var(--mag);outline-offset:2px}
+.len .l1{font-weight:700;font-size:15px}
+.len .l2{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-top:3px}
+textarea{width:100%;height:190px;font-family:ui-monospace,monospace;font-size:10.5px;line-height:1.5;
+  border:1px solid var(--rule);border-radius:2px;padding:10px;background:#fff;color:var(--ink)}
+.hist{display:flex;justify-content:space-between;border-top:1px solid var(--rule2);padding:9px 0;
+  font-family:ui-monospace,monospace;font-size:12px}
+.kbd{font-family:ui-monospace,monospace;font-size:10px;border:1px solid var(--rule);border-radius:2px;
+  padding:1px 5px;background:#fff;color:var(--ink3)}
+.note{font-size:12.5px;color:var(--ink3);margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--rule2)}
+th{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+@media(max-width:560px){
+  .cdi,.poles{grid-template-columns:96px 1fr 36px;gap:7px}
+  .cdi .nm{font-size:9.5px;letter-spacing:0}
+  .poles div:nth-child(2){font-size:8.5px}
+  h1{font-size:25px}
+  .opt .txt{font-size:15px;padding:13px 12px}
+}
+@media print{
+  @page{margin:14mm 12mm}
+  body,html{background:#fff}
+  .wrap{max-width:none;padding:0}
+  .strip{position:static;page-break-inside:avoid}
+  .bar,.btn,textarea{display:none!important}
+  section{padding:10px 0 2px;page-break-inside:auto}
+  h2{page-break-after:avoid;margin-top:4px}
+  .flag,.miss,tr{page-break-inside:avoid}
+  .cdi{page-break-inside:avoid;margin-bottom:0}
+  .poles{page-break-inside:avoid;margin-bottom:11px}
+  p{orphans:3;widows:3;margin-bottom:8px}
+  h1{font-size:24px}
+  .printonly{display:block!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.printonly{display:none}
+@media print{.noprint{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.hidden{display:none}
+
+.split{display:flex;gap:3px;align-items:center;font-family:ui-monospace,monospace;font-size:10.5px}
+.split b{font-weight:700}
+.bal{position:relative;height:14px;flex:1;background:var(--rule2);border-radius:1px;overflow:hidden;min-width:70px}
+.bal i{position:absolute;top:0;bottom:0;left:0;background:var(--steel)}
+.stab td:first-child{font-family:ui-monospace,monospace;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.stab td{font-family:ui-monospace,monospace;font-size:12px}
+.warnbox{border:1px solid var(--rule);background:#fff;border-radius:2px;padding:14px 16px;margin-bottom:16px}
+.warnbox h3{margin:0 0 6px}
+
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ============================================================================
+   WHAT THIS IS
+
+   A rehearsal environment for the forced-choice format Aon's ADEPT-15 uses.
+   It records what you said about yourself and whether you say the same thing
+   twice. It does NOT score you, because scoring you would require Aon's item
+   parameters and Delta's key, and neither is public.
+
+   DOCUMENTED (Aon technical documentation, BPS test review, Delta's careers page):
+     - 15 bipolar aspects grouped into 6 workstyles
+     - forced-choice pairs drawn from different aspects, matched on social
+       desirability, each rated slightly / agree / strongly agree
+     - computer-adaptive, scored with MUPP and GGUM item-response models
+     - ~150 items, five per page, no time limit
+     - Delta uses the Aon assessment as its first gate, then a panel interview
+       at HQ with the MMPI-2, then an interview with a Delta psychologist
+
+   NOT REPLICATED HERE:
+     - adaptive item selection (this samples pairs up front)
+     - IRT scoring against calibrated item parameters
+     - normative scores against a norm group
+     - any pass mark, cut score, or target profile
+   ============================================================================ */
+
+const ASPECTS = {
+  drive:          {label:"Drive",           style:"Task",        lo:"Relaxed",      hi:"Dependable"},
+  structure:      {label:"Structure",       style:"Task",        lo:"Unstructured", hi:"Organised"},
+  conceptual:     {label:"Conceptual",      style:"Adaptation",  lo:"Practical",    hi:"Abstract"},
+  flexibility:    {label:"Flexibility",     style:"Adaptation",  lo:"Consistent",   hi:"Flexible"},
+  mastery:        {label:"Mastery",         style:"Adaptation",  lo:"Doing",        hi:"Improving"},
+  ambition:       {label:"Ambition",        style:"Achievement", lo:"Contented",    hi:"Striving"},
+  power:          {label:"Power",           style:"Achievement", lo:"Collaborative",hi:"Directive"},
+  assertiveness:  {label:"Assertiveness",   style:"Interaction", lo:"Cautious",     hi:"Bold"},
+  liveliness:     {label:"Liveliness",      style:"Interaction", lo:"Reserved",     hi:"Outgoing"},
+  composure:      {label:"Composure",       style:"Emotional",   lo:"Expressive",   hi:"Calm"},
+  positivity:     {label:"Positivity",      style:"Emotional",   lo:"Concerned",    hi:"Hopeful"},
+  awareness:      {label:"Awareness",       style:"Emotional",   lo:"Insulated",    hi:"Self-aware"},
+  cooperativeness:{label:"Cooperativeness", style:"Teamwork",    lo:"Independent",  hi:"Team-oriented"},
+  sensitivity:    {label:"Sensitivity",     style:"Teamwork",    lo:"Stoic",        hi:"Compassionate"},
+  humility:       {label:"Humility",        style:"Teamwork",    lo:"Proud",        hi:"Humble"}
+};
+const STYLES=[
+  {name:"Task",aspects:["drive","structure"]},
+  {name:"Adaptation",aspects:["conceptual","flexibility","mastery"]},
+  {name:"Achievement",aspects:["ambition","power"]},
+  {name:"Interaction",aspects:["assertiveness","liveliness"]},
+  {name:"Emotional",aspects:["composure","positivity","awareness"]},
+  {name:"Teamwork",aspects:["cooperativeness","sensitivity","humility"]}
+];
+
+/* a=aspect  p=+1 high pole / -1 low pole  d=social desirability 1..5 */
+const S=(a,p,d,t)=>({a,p,d,t});
+const POOL=[
+  // DRIVE
+  S("drive",1,4,"People can count on me to do exactly what I said I would."),
+  S("drive",1,4,"I finish what I start, even after it stops being interesting."),
+  S("drive",1,4,"My word is the thing I am most careful with."),
+  S("drive",1,3,"I would rather be the reliable one than the interesting one."),
+  S("drive",1,4,"If I said I would be there, I am there."),
+  S("drive",-1,3,"I keep a relaxed pace and let priorities shift as they need to."),
+  S("drive",-1,2,"I do not get worked up about deadlines."),
+  S("drive",-1,1,"I start more things than I finish."),
+  // STRUCTURE
+  S("structure",1,4,"I check important details twice before I call something finished."),
+  S("structure",1,3,"I notice right away when something is not where it belongs."),
+  S("structure",1,4,"I like a clear process before I start something that matters."),
+  S("structure",1,3,"Checklists do not bore me."),
+  S("structure",1,4,"I would rather catch it on the ground than deal with it airborne."),
+  S("structure",-1,3,"I work better with room to improvise than with a fixed process."),
+  S("structure",-1,2,"I am not particular about keeping things neat and ordered."),
+  S("structure",-1,1,"Tracking small details is mostly a waste of time."),
+  S("structure",-1,1,"I am disorganised and it works fine for me."),
+  // CONCEPTUAL
+  S("conceptual",1,3,"I like understanding why a system behaves the way it does."),
+  S("conceptual",1,4,"I notice patterns quickly when a situation gets complicated."),
+  S("conceptual",1,3,"I connect things other people treat as separate."),
+  S("conceptual",1,3,"I see the shape of a problem before I see the details."),
+  S("conceptual",-1,3,"I would rather work with concrete facts than with theories."),
+  S("conceptual",-1,3,"Give me the established method and I will execute it well."),
+  S("conceptual",-1,1,"Complicated problems make me want to hand them off."),
+  // FLEXIBILITY
+  S("flexibility",1,4,"I adjust quickly when priorities change."),
+  S("flexibility",1,3,"I do not get attached to my own plan."),
+  S("flexibility",1,3,"A plan changing does not bother me."),
+  S("flexibility",1,3,"I am willing to change my method when there is a good reason."),
+  S("flexibility",-1,3,"I like consistency and knowing what to expect."),
+  S("flexibility",-1,3,"I prefer proven approaches to novel ones."),
+  S("flexibility",-1,2,"I do not much like change; I prefer things stay as they are."),
+  S("flexibility",-1,1,"Unexpected changes throw off my whole day."),
+  // MASTERY
+  S("mastery",1,3,"I go looking for the parts of the job I am weakest at."),
+  S("mastery",1,3,"Frustration while learning something hard does not put me off."),
+  S("mastery",1,4,"I would rather be genuinely good than look good."),
+  S("mastery",1,3,"I keep practising something difficult until I am good at it."),
+  S("mastery",-1,3,"I focus on getting it done more than on getting better at it."),
+  S("mastery",-1,2,"I would rather do what I am already good at than struggle with something new."),
+  S("mastery",-1,1,"I avoid situations where I might look incompetent."),
+  // AMBITION
+  S("ambition",1,4,"I have taken concrete steps toward the next stage of my career."),
+  S("ambition",1,3,"I measure myself against where I want to be, not where I am."),
+  S("ambition",1,3,"I have turned down easier options to take the harder path forward."),
+  S("ambition",1,3,"I am not done climbing."),
+  S("ambition",1,4,"I set demanding goals and generally hit them."),
+  S("ambition",-1,3,"I am satisfied with steady work done well."),
+  S("ambition",-1,2,"I am content where I am and not chasing the next thing."),
+  S("ambition",-1,1,"I need a push to get started on my work."),
+  // POWER
+  S("power",1,4,"I am comfortable owning the call when a decision affects others."),
+  S("power",1,4,"I take initiative when there is a gap in leadership."),
+  S("power",1,4,"I will make the decision and carry it when nobody else will."),
+  S("power",1,3,"I enjoy giving a team clear direction."),
+  S("power",-1,3,"I would rather contribute than direct."),
+  S("power",-1,3,"I am happier following a good plan than writing one."),
+  S("power",-1,2,"I will lead if I have to, but I do not want the responsibility."),
+  // ASSERTIVENESS
+  S("assertiveness",1,4,"I raise a concern directly even when it is awkward."),
+  S("assertiveness",1,4,"I will question a decision I think is wrong, up the chain."),
+  S("assertiveness",1,4,"I do not soften a safety concern to be polite."),
+  S("assertiveness",1,3,"I hold a position I believe is right under pushback."),
+  S("assertiveness",1,4,"I speak up early rather than sitting on a concern."),
+  S("assertiveness",-1,3,"I pick my moments rather than pushing my view."),
+  S("assertiveness",-1,2,"I let something go rather than have the hard conversation."),
+  S("assertiveness",-1,1,"I keep opinions to myself when I am not confident enough."),
+  // LIVELINESS
+  S("liveliness",1,3,"I engage people easily without trying."),
+  S("liveliness",1,3,"New crew, new people — that part of the job is easy for me."),
+  S("liveliness",1,3,"I keep the mood around me steady and light."),
+  S("liveliness",1,3,"I enjoy meeting people I do not know."),
+  S("liveliness",-1,3,"I am more of a listener than a talker."),
+  S("liveliness",-1,3,"I go quiet until I have read the situation."),
+  S("liveliness",-1,2,"Making conversation with strangers wears me out."),
+  // COMPOSURE
+  S("composure",1,4,"It takes a lot to make me lose my temper."),
+  S("composure",1,4,"Stress building over a long day does not rattle me."),
+  S("composure",1,4,"Someone else losing their composure does not move mine."),
+  S("composure",1,4,"Pressure narrows my focus rather than scattering it."),
+  S("composure",1,4,"I keep my emotions in check even when other people are difficult."),
+  S("composure",-1,3,"I show what I am feeling; people always know where I stand."),
+  S("composure",-1,1,"Small things get under my skin more than they should."),
+  S("composure",-1,1,"Frustration shows on my face before I decide to show it."),
+  S("composure",-1,1,"I have a quick temper sometimes."),
+  // POSITIVITY
+  S("positivity",1,4,"A bad day does not carry into the next one for me."),
+  S("positivity",1,4,"I bounce back fast after a setback."),
+  S("positivity",1,3,"Slow, frustrating progress does not dent my outlook."),
+  S("positivity",1,4,"I stay optimistic because I trust my preparation."),
+  S("positivity",-1,3,"I plan for what could go wrong more than for what could go right."),
+  S("positivity",-1,3,"I would rather assume the worst case and be ready for it."),
+  S("positivity",-1,1,"When progress stalls I get discouraged."),
+  S("positivity",-1,1,"A bad experience can colour the rest of my day."),
+  // AWARENESS
+  S("awareness",1,4,"I know exactly which of my tendencies gets me into trouble."),
+  S("awareness",1,3,"I can explain why I do the things I do."),
+  S("awareness",1,4,"I have changed real habits based on feedback I was given."),
+  S("awareness",1,4,"I know what throws me off and I plan around it."),
+  S("awareness",1,4,"I think carefully about how my behaviour affects other people."),
+  S("awareness",-1,3,"I do not spend much time analysing my own reactions."),
+  S("awareness",-1,1,"I am often not sure why I feel the way I do."),
+  S("awareness",-1,1,"Feedback about my behaviour usually surprises me."),
+  S("awareness",-1,1,"I can miss the impact I have on others unless someone points it out."),
+  // COOPERATIVENESS
+  S("cooperativeness",1,4,"I step in to help a team without being asked."),
+  S("cooperativeness",1,4,"I would take on more so the person next to me is not buried."),
+  S("cooperativeness",1,4,"I work well with people whose style is nothing like mine."),
+  S("cooperativeness",1,3,"I look for ways to strengthen the whole team."),
+  S("cooperativeness",-1,3,"I do my best work when I am left to run my own show."),
+  S("cooperativeness",-1,2,"I would rather work alone than coordinate with a group."),
+  S("cooperativeness",-1,1,"I get irritated when coworkers ask me to do things for them."),
+  S("cooperativeness",-1,1,"There are times when I find it a strain to be on a team."),
+  // SENSITIVITY
+  S("sensitivity",1,4,"I can tell when someone is struggling before they say so."),
+  S("sensitivity",1,4,"I notice the effect my tone has on other people."),
+  S("sensitivity",1,3,"I adjust how I say something based on who is hearing it."),
+  S("sensitivity",1,3,"I know when to push someone and when to back off."),
+  S("sensitivity",-1,3,"I stay objective when other people are getting emotional."),
+  S("sensitivity",-1,2,"I do not always pick up on how someone is doing."),
+  S("sensitivity",-1,1,"People tell me I come across colder than I mean to."),
+  // HUMILITY
+  S("humility",1,4,"I do not need anyone to notice my work for it to matter."),
+  S("humility",1,4,"I am the first to say when someone else's idea is better."),
+  S("humility",1,4,"I take correction without getting defensive."),
+  S("humility",1,3,"I give credit away easily."),
+  S("humility",-1,3,"I am confident about what I bring and I say so."),
+  S("humility",-1,2,"I need my work recognised to feel good about it."),
+  S("humility",-1,1,"I want people to notice when I outperform them.")
+];
+
+const INT=[{k:"slightly",label:"Slightly agree",w:0.62},
+           {k:"moderately",label:"Agree",w:0.76},
+           {k:"strongly",label:"Strongly agree",w:0.92}];
+const LENGTHS=[{k:"quick",n:30,mins:"6\u20138 min",note:"Between legs"},
+               {k:"short",n:60,mins:"11\u201314 min",note:"Hotel van"},
+               {k:"standard",n:90,mins:"17\u201321 min",note:"Most useful"},
+               {k:"full",n:150,mins:"27\u201333 min",note:"Real length"}];
+const LENLABEL={quick:"Quick",short:"Short",standard:"Standard",full:"Full"};
+const PER_PAGE=5;
+
+/* ---------------------------------------------------------------------------
+   PAIRING — different aspects, desirability matched within 1 point, balanced
+   coverage, one in five pairing two unflattering statements.
+   --------------------------------------------------------------------------- */
+function key(x,y){return x.t<y.t?x.t+"||"+y.t:y.t+"||"+x.t;}
+function buildPairs(n){
+  const counts={};Object.keys(ASPECTS).forEach(a=>counts[a]=0);
+  const used=new Set(),seen=new Set(),pairs=[];
+  const rnd=a=>a[Math.floor(Math.random()*a.length)];
+  let guard=0;
+  while(pairs.length<n&&guard<n*400){
+    guard++;
+    const hard=pairs.length%5===4;
+    const cand=POOL.filter(s=>hard?s.d<=2:s.d>=3);
+    const order=Object.keys(ASPECTS).sort((x,y)=>counts[x]-counts[y]+Math.random()-0.5);
+    const aA=order.find(a=>cand.some(s=>s.a===a&&!used.has(s.t)))||order.find(a=>cand.some(s=>s.a===a))||rnd(order);
+    let aO=cand.filter(s=>s.a===aA&&!used.has(s.t));
+    if(!aO.length){used.clear();aO=cand.filter(s=>s.a===aA);}
+    if(!aO.length)continue;
+    const A=rnd(aO);
+    let bO=cand.filter(s=>s.a!==aA&&Math.abs(s.d-A.d)<=1&&!used.has(s.t)&&!seen.has(key(A,s)));
+    if(!bO.length)bO=cand.filter(s=>s.a!==aA&&Math.abs(s.d-A.d)<=1&&!seen.has(key(A,s)));
+    if(!bO.length)continue;
+    bO.sort((x,y)=>counts[x.a]-counts[y.a]+Math.random()-0.5);
+    const B=bO[0];
+    used.add(A.t);used.add(B.t);seen.add(key(A,B));
+    counts[A.a]++;counts[B.a]++;
+    const f=Math.random()<0.5;
+    pairs.push({id:pairs.length+1,a:f?B:A,b:f?A:B,hard});
+  }
+  return pairs;
+}
+
+/* ---------------------------------------------------------------------------
+   MEASUREMENT — descriptive only. No target, no score, no verdict.
+
+   position  where this aspect sits relative to your OTHER aspects (ipsative;
+             forced choice pins the average near the middle by construction, so
+             this is a ranking of priorities, never a level)
+   split     when you picked a statement from this aspect, which pole was it?
+             endorsing both poles is a contradiction the adaptive engine hunts
+   emphasis  where your "strongly agree" answers landed
+   --------------------------------------------------------------------------- */
+function measure(pairs,ans){
+  const c={},chosen={};
+  Object.keys(ASPECTS).forEach(a=>{c[a]=[];chosen[a]=[];});
+  pairs.forEach(p=>{
+    const r=ans[p.id];if(!r)return;
+    const w=INT.find(i=>i.k===r.i).w;
+    const pick=r.c==="a"?p.a:p.b, other=r.c==="a"?p.b:p.a;
+    c[pick.a].push(pick.p===1?w:1-w);
+    c[other.a].push(other.p===1?1-w:w);
+    chosen[pick.a].push({pole:pick.p,q:p.id,t:pick.t,i:r.i,d:pick.d});
+  });
+  const asp={};
+  Object.keys(ASPECTS).forEach(a=>{
+    if(!c[a].length){asp[a]=null;return;}
+    const mean=c[a].reduce((s,x)=>s+x,0)/c[a].length;
+    const ch=chosen[a];
+    const hi=ch.filter(x=>x.pole===1).length, lo=ch.filter(x=>x.pole===-1).length;
+    asp[a]={position:Math.round(mean*100)/10,n:c[a].length,hi,lo,picks:ch,
+      split: ch.length>=4 && Math.min(hi,lo)>=2 && Math.min(hi,lo)/ch.length>=0.3};
+  });
+  const styles=STYLES.map(st=>{
+    const live=st.aspects.filter(a=>asp[a]);
+    return {...st,position: live.length? Math.round(live.reduce((s,a)=>s+asp[a].position,0)/live.length*10)/10 : null};
+  });
+  const list=Object.values(ans);
+  const dist={slightly:0,moderately:0,strongly:0};
+  list.forEach(r=>dist[r.i]++);
+
+  // every unflattering statement you took at maximum agreement
+  const emphatic=[];
+  pairs.forEach(p=>{
+    const r=ans[p.id];if(!r)return;
+    const pick=r.c==="a"?p.a:p.b;
+    if(r.i==="strongly"&&pick.d<=2) emphatic.push({id:p.id,t:pick.t,a:ASPECTS[pick.a].label,pole:pick.p});
+  });
+  return {asp,styles,dist,emphatic,answered:list.length,
+    splits:Object.keys(ASPECTS).filter(a=>asp[a]&&asp[a].split)};
+}
+
+/* stability across sittings — the one thing this tool can honestly measure,
+   because it compares the instrument against itself */
+function stability(hist){
+  if(hist.length<2) return null;
+  const rows=[];
+  Object.keys(ASPECTS).forEach(a=>{
+    const v=hist.map(h=>(h.asp||{})[a]).filter(x=>typeof x==="number");
+    if(v.length<2) return;
+    const m=v.reduce((s,x)=>s+x,0)/v.length;
+    const spread=Math.max(...v)-Math.min(...v);
+    rows.push({a,label:ASPECTS[a].label,vals:v,mean:Math.round(m*10)/10,spread:Math.round(spread*10)/10});
+  });
+  if(!rows.length) return null;
+  const mean=rows.reduce((s,r)=>s+r.spread,0)/rows.length;
+  rows.sort((x,y)=>y.spread-x.spread);
+  return {rows,meanSpread:Math.round(mean*10)/10};
+}
+
+/* ---------------------------------------------------------------------------
+   STATE + VIEWS
+   --------------------------------------------------------------------------- */
+let ST={view:"setup",len:"standard",pairs:[],ans:{},page:0,t0:0,tick:null,res:null,hist:[]};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+const pad=(n,w)=>String(n).padStart(w||3,"0");
+
+function load(){
+  try{ST.hist=JSON.parse(localStorage.getItem("adept:hist")||"[]");}catch(e){ST.hist=[];}
+  try{const s=JSON.parse(localStorage.getItem("adept:inprogress")||"null");
+    if(s&&s.pairs&&s.pairs.length&&Object.keys(s.ans).length<s.pairs.length)ST.resume=s;}catch(e){}
+}
+function saveProgress(){try{localStorage.setItem("adept:inprogress",
+  JSON.stringify({pairs:ST.pairs,ans:ST.ans,page:ST.page,len:ST.len,t0:ST.t0}));}catch(e){}}
+function clearProgress(){try{localStorage.removeItem("adept:inprogress");}catch(e){}}
+function elapsed(){const s=Math.floor((Date.now()-ST.t0)/1000);
+  return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function startTick(){clearInterval(ST.tick);
+  ST.tick=setInterval(()=>{const e=$("clock");if(e)e.textContent=elapsed();},1000);}
+
+function render(){({setup:renderSetup,test:renderTest,results:renderResults})[ST.view]();}
+
+/* ---------- position bar: no target window, because there is no key ------- */
+function bar(name,val,poles,big){
+  const pct=v=>(v/10*100)+"%";
+  return `<div class="cdi ${big?"big":"asp"}">
+    <div class="nm">${esc(name)}</div>
+    <div class="track">
+      <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--rule)"></div>
+      <div class="dot" style="left:calc(${pct(val)} - 1.5px)"></div>
+    </div>
+    <div class="val">${val.toFixed(1)}</div></div>
+    ${poles?`<div class="poles"><div></div><div><span>${esc(poles[0])}</span><span>${esc(poles[1])}</span></div><div></div></div>`:""}`;
+}
+
+function renderSetup(){
+  const resume=ST.resume?`<section><h2>Unfinished sitting</h2>
+    <p>${Object.keys(ST.resume.ans).length} of ${ST.resume.pairs.length} answered.</p>
+    <div class="row" style="margin-top:6px"><button class="btn" id="doResume">Resume</button>
+    <button class="btn ghost" id="dropResume">Discard</button></div></section>`:"";
+  const hist=ST.hist.length?`<section><h2>Sittings on file</h2>${trend(ST.hist)}
+    <div style="margin-top:16px">${ST.hist.map(h=>`<div class="hist">
+      <span>${h.date} · ${h.time} · ${h.n} items · ${LENLABEL[h.len]||h.len}</span>
+      <span>${h.splits} split${h.splits===1?"":"s"} · ${h.emphatic} emphatic</span></div>`).join("")}</div>
+    <div class="row"><button class="btn ghost" id="clearHist">Clear history</button></div></section>`:"";
+
+  $("app").innerHTML=`
+  <div class="strip"><div><b>ADEPT-15 FORMAT PRACTICE</b></div><div>Forced choice</div><div>${POOL.length} statements</div></div>
+  <section>
+    <div class="eyebrow" style="margin-bottom:10px">Delta · Aon online assessment</div>
+    <h1>Rehearsal, not a score.</h1>
+    <p style="margin-top:14px">Two statements from two different aspects of personality, matched so they
+    sound about equally good. You pick which is more like you and how much you agree with it. One pair in
+    five puts two unflattering statements against each other.</p>
+    <div class="warnbox">
+      <h3>What this does and does not do</h3>
+      <p style="margin-bottom:8px"><b>It does:</b> reproduce the format so it is familiar; record where you
+      placed yourself on each of the 15 aspects relative to your others; count where you endorsed both poles
+      of the same aspect; show which unflattering statements you agreed with emphatically; and track whether
+      your answers hold still across sittings.</p>
+      <p style="margin-bottom:0"><b>It does not:</b> score you, predict a result, or tell you what to answer.
+      Aon's item parameters and Delta's key are not public. Any tool that hands you a readiness number is
+      making it up — this one used to, and that was wrong. Nothing here is a pass mark.</p>
+    </div>
+    <p>The real assessment is adaptive: it chooses each item based on where your profile is least certain,
+    and it is scored with IRT models calibrated on millions of respondents. This samples pairs up front and
+    does neither. Treat it as a flight-deck flow you rehearse, not a check ride you pass.</p>
+    <p>Worth knowing: Delta's careers page says the Aon assessment covers personality <em>and skill-based
+    competencies</em> — there is a cognitive component this does not touch at all. The Aon test is the first
+    gate; a panel interview at HQ with the MMPI-2 and an interview with a Delta psychologist come after.</p>
+  </section>
+  ${resume}
+  <section><h2>Length</h2>
+    <div class="lenrow">${LENGTHS.map(l=>`<button class="len" data-len="${l.k}" data-on="${ST.len===l.k?1:0}">
+      <span><span class="l1">${LENLABEL[l.k]}</span><span class="l2" style="display:block">${l.note}</span></span>
+      <span style="text-align:right"><span class="l2" style="display:block">${l.n} items</span>
+      <span class="l2" style="display:block">${l.mins}</span></span></button>`).join("")}</div>
+    <div class="row"><button class="btn" id="begin">Begin</button></div>
+    <p class="note">Keyboard: <span class="kbd">A</span> <span class="kbd">B</span> choose ·
+      <span class="kbd">1</span> <span class="kbd">2</span> <span class="kbd">3</span> agreement ·
+      <span class="kbd">Enter</span> next page. Progress saves automatically.</p>
+  </section>${hist}`;
+
+  document.querySelectorAll("[data-len]").forEach(b=>b.onclick=()=>{ST.len=b.dataset.len;render();});
+  $("begin").onclick=()=>{ST.pairs=buildPairs(LENGTHS.find(l=>l.k===ST.len).n);
+    ST.ans={};ST.page=0;ST.t0=Date.now();ST.view="test";startTick();render();};
+  if($("doResume"))$("doResume").onclick=()=>{Object.assign(ST,{pairs:ST.resume.pairs,ans:ST.resume.ans,
+    page:ST.resume.page,len:ST.resume.len,t0:ST.resume.t0,resume:null,view:"test"});startTick();render();};
+  if($("dropResume"))$("dropResume").onclick=()=>{clearProgress();ST.resume=null;render();};
+  if($("clearHist"))$("clearHist").onclick=()=>{ST.hist=[];try{localStorage.removeItem("adept:hist");}catch(e){}render();};
+}
+
+function renderTest(){
+  const total=ST.pairs.length,pages=Math.ceil(total/PER_PAGE);
+  const slice=ST.pairs.slice(ST.page*PER_PAGE,(ST.page+1)*PER_PAGE);
+  const done=Object.keys(ST.ans).length, ok=slice.every(p=>ST.ans[p.id]);
+  $("app").innerHTML=`
+  <div class="strip"><div><b>${pad(done)}</b> / ${total}</div><div id="clock">${elapsed()}</div>
+    <div class="bar"><i><u style="width:${Math.round(done/total*100)}%"></u></i></div>
+    <div>Page ${ST.page+1}/${pages}</div></div>
+  <section>
+    <div class="eyebrow" style="margin-bottom:14px">Pick the statement that is more like you, then how much you agree with it</div>
+    ${slice.map(p=>{const r=ST.ans[p.id];
+      return `<div class="pair ${r?"done":""}"><div class="ph"><span>${pad(p.id)}</span>
+        <span>${p.hard?"Both unflattering":"Preference"}${r?" · answered":""}</span></div>
+        ${["a","b"].map(k=>`<button class="opt" data-pair="${p.id}" data-side="${k}" data-on="${r&&r.c===k?1:0}">
+          <span class="tag">${k.toUpperCase()}</span><span class="txt">${esc(p[k].t)}</span></button>`).join("")}
+        <div class="seg ${r?"":"off"}">${INT.map(x=>`<button data-pair="${p.id}" data-int="${x.k}"
+          data-on="${r&&r.i===x.k?1:0}">${x.label}</button>`).join("")}</div></div>`;}).join("")}
+    <div class="row"><button class="btn" id="next" ${ok?"":"disabled"}>${ST.page+1>=pages?"Finish":"Next page"}</button>
+      ${ST.page>0?'<button class="btn ghost" id="back">Back</button>':""}
+      <button class="btn ghost" id="stop">Save &amp; stop</button></div>
+    <p class="note">${ok?"":"Answer all five to continue. "}The real assessment has no time limit either.</p>
+  </section>`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const id=+b.dataset.pair,pr=ST.ans[id];
+    ST.ans[id]={c:b.dataset.side,i:pr?pr.i:"moderately"};saveProgress();renderTest();});
+  document.querySelectorAll("[data-int]").forEach(b=>b.onclick=()=>{const id=+b.dataset.pair;
+    if(ST.ans[id]){ST.ans[id].i=b.dataset.int;saveProgress();renderTest();}});
+  $("next").onclick=()=>{if(ST.page+1>=pages)finish();else{ST.page++;saveProgress();renderTest();scrollTo(0,0);}};
+  if($("back"))$("back").onclick=()=>{ST.page--;saveProgress();renderTest();scrollTo(0,0);};
+  $("stop").onclick=()=>{clearInterval(ST.tick);saveProgress();load();ST.view="setup";render();};
+}
+
+function finish(){
+  clearInterval(ST.tick);
+  ST.res=measure(ST.pairs,ST.ans);ST.elapsedAt=elapsed();
+  const d=new Date(),a={};
+  Object.keys(ASPECTS).forEach(k=>{if(ST.res.asp[k])a[k]=ST.res.asp[k].position;});
+  ST.hist=[{date:d.toISOString().slice(0,10),time:d.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),
+    n:ST.res.answered,len:ST.len,asp:a,splits:ST.res.splits.length,emphatic:ST.res.emphatic.length},...ST.hist].slice(0,30);
+  try{localStorage.setItem("adept:hist",JSON.stringify(ST.hist));}catch(e){}
+  clearProgress();ST.view="results";render();scrollTo(0,0);
+}
+
+/* ---------- trend: aspect stability across sittings ---------------------- */
+function trend(hist){
+  const st=stability(hist.slice().reverse());
+  if(!st) return `<p class="note">One sitting on file. The comparison across sittings is the only thing
+    this tool measures well, and it needs a second one.</p>`;
+  const H=hist.slice().reverse().slice(-12);
+  const W=640,Ht=150,PL=34,PR=30,PT=16,PB=26;
+  const x=i=>PL+i*(W-PL-PR)/Math.max(H.length-1,1), y=v=>PT+(10-v)/10*(Ht-PT-PB);
+  const grid=[0,2.5,5,7.5,10].map(v=>`<line x1="${PL}" y1="${y(v)}" x2="${W-PR}" y2="${y(v)}"
+    stroke="var(--rule2)"/><text x="${PL-6}" y="${y(v)+3.5}" text-anchor="end" font-size="9"
+    fill="var(--ink3)" font-family="ui-monospace,monospace">${v}</text>`).join("");
+  const pal=["#B01A5F","#2C5875","#A0650B","#2C6A4C","#6B4B8A","#8A5A2B"];
+  const lines=STYLES.map((s,si)=>{
+    const pts=H.map((h,i)=>{const v=s.aspects.map(a=>(h.asp||{})[a]).filter(z=>typeof z==="number");
+      return v.length?[x(i),y(v.reduce((q,z)=>q+z,0)/v.length)]:null;}).filter(Boolean);
+    if(pts.length<2)return"";
+    return `<path d="${pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")}"
+      fill="none" stroke="${pal[si]}" stroke-width="1.8"/>`+
+      pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.4" fill="${pal[si]}"/>`).join("");
+  }).join("");
+  const labs=H.map((h,i)=>`<text x="${x(i).toFixed(1)}" y="${Ht-8}"
+    text-anchor="${i===0?"start":i===H.length-1?"end":"middle"}" font-size="8.5" fill="var(--ink3)"
+    font-family="ui-monospace,monospace">${h.date.slice(5)}</text>`).join("");
+  const legend=STYLES.map((s,i)=>`<span style="white-space:nowrap"><span style="display:inline-block;
+    width:9px;height:2.5px;background:${pal[i]};vertical-align:3px"></span>
+    <span class="eyebrow">${s.name}</span></span>`).join(" &nbsp; ");
+
+  const worst=st.rows.slice(0,4);
+  const verdict = st.meanSpread<=0.8
+    ? `Your aspects moved <b>${st.meanSpread}</b> points on average between sittings. That is a settled
+       self-description — and stability is the one property the real instrument is genuinely built to detect.`
+    : st.meanSpread<=1.6
+    ? `Your aspects moved <b>${st.meanSpread}</b> points on average between sittings. Some of that is item
+       sampling rather than you, but it is worth seeing which aspects move most.`
+    : `Your aspects moved <b>${st.meanSpread}</b> points on average between sittings. That is more movement
+       than item sampling alone explains. The aspects at the top of the table are where your account of
+       yourself is not settled.`;
+
+  return `<svg viewBox="0 0 ${W} ${Ht}" width="100%" style="display:block" role="img"
+      aria-label="Workstyle position across sittings">${grid}${lines}${labs}</svg>
+    <div style="margin:4px 0 12px">${legend}</div>
+    <p class="note" style="margin-top:0">${verdict}</p>
+    <table class="stab"><tr><th>Least settled</th><th>Range</th><th>Spread</th></tr>
+    ${worst.map(r=>`<tr><td>${r.label}</td><td>${Math.min(...r.vals).toFixed(1)} – ${Math.max(...r.vals).toFixed(1)}</td>
+      <td><b>${r.spread.toFixed(1)}</b></td></tr>`).join("")}</table>`;
+}
+
+function renderResults(){
+  const r=ST.res;
+  const splitRows=Object.keys(ASPECTS).filter(a=>r.asp[a]).map(a=>{
+    const x=r.asp[a],tot=x.hi+x.lo;if(!tot)return"";
+    return `<tr><td style="width:34%">${ASPECTS[a].label}${x.split?" ⚠":""}</td>
+      <td><div class="split"><b>${x.lo}</b>
+      <div class="bal"><i style="width:${Math.round(x.lo/tot*100)}%"></i></div><b>${x.hi}</b></div></td>
+      <td class="mono" style="font-size:10.5px;color:var(--ink3);width:38%">${ASPECTS[a].lo} / ${ASPECTS[a].hi}</td></tr>`;
+  }).join("");
+
+  $("app").innerHTML=`
+  <div class="strip"><div><b>SITTING</b></div><div>${r.answered} items</div>
+    <div>${ST.elapsedAt}</div><div>${new Date().toLocaleDateString()}</div></div>
+
+  <section>
+    <div class="printonly" style="border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:16px">
+      <div class="eyebrow">ADEPT-15 format practice · record of sitting</div>
+      <div class="mono" style="font-size:13px;font-weight:700;margin-top:3px">
+        ${new Date().toLocaleDateString()} · ${LENLABEL[ST.len]} · ${r.answered} items · ${ST.elapsedAt}</div></div>
+    <h1 style="font-size:24px">What you said about yourself</h1>
+    <p style="margin-top:12px">There is no score here on purpose. These are descriptions of your answers,
+    not judgements of them.</p>
+  </section>
+
+  <section><h2>Where you placed yourself</h2>
+    ${r.styles.filter(s=>s.position!==null).map(s=>bar(s.name,s.position,null,true)).join("")}
+    <div style="height:10px"></div>
+    ${Object.keys(ASPECTS).filter(a=>r.asp[a]).map(a=>
+      bar(ASPECTS[a].label,r.asp[a].position,[ASPECTS[a].lo,ASPECTS[a].hi])).join("")}
+    <div class="flag" data-s="note"><h3><span class="pill" data-s="note">read this</span>These are priorities, not levels</h3>
+    <p>Forced choice pins the average across all fifteen near the centre line by construction. A mark to the
+    left of centre does not mean you are low on that aspect — it means that when it was traded against
+    something else, the something else won. Neither pole is a failure. Aon built the instrument this way
+    deliberately, which is why no single direction is "the right answer".</p></div>
+  </section>
+
+  <section><h2>Consistency — both poles endorsed</h2>
+    <p>When you picked a statement belonging to an aspect, which end did you pick? Choosing both ends of the
+    same aspect is the contradiction adaptive testing exists to find: the real instrument responds by serving
+    you <em>more</em> items on that aspect until it resolves.</p>
+    <table>${splitRows}</table>
+    <p class="note">${r.splits.length? "Split on: "+r.splits.map(a=>ASPECTS[a].label).join(", ")+
+      ". Some split is normal — a few of these aspects are near-neutral for you and the pairs will pull both ways."
+      : "No aspect showed a substantial split this sitting."}</p>
+  </section>
+
+  <section><h2>Agreement pattern</h2>
+    <p>Slightly agree <b>${r.dist.slightly}</b> · Agree <b>${r.dist.moderately}</b> ·
+    Strongly agree <b>${r.dist.strongly}</b> of ${r.answered}.</p>
+    <p>Sometimes you have to pick the lesser of two unflattering statements. Saying you <em>strongly</em>
+    agree with it is a separate choice, and it is the one you control.</p>
+    ${r.emphatic.length?`<table><tr><th>#</th><th>Unflattering, taken at strongly agree</th><th>Aspect</th></tr>
+      ${r.emphatic.map(x=>`<tr><td class="mono">${pad(x.id)}</td><td>${esc(x.t)}</td>
+      <td class="mono" style="font-size:11px;color:var(--ink3)">${esc(x.a)}</td></tr>`).join("")}</table>`
+      :`<p class="note">You did not take any unflattering statement at maximum agreement this sitting.</p>`}
+  </section>
+
+  <section><h2>Across sittings</h2>${trend(ST.hist)}</section>
+
+  <section><h2 class="noprint">Export</h2>
+    <div class="row" style="margin-top:0;margin-bottom:14px">
+      <button class="btn" id="pdf">Save as PDF</button>
+      <button class="btn ghost" id="copy">Copy record</button>
+      <button class="btn ghost" id="dl">Download .md</button>
+      <button class="btn ghost" id="again">New sitting</button></div>
+    <textarea readonly id="md"></textarea></section>`;
+
+  const md=record();
+  $("md").value=md;$("md").onfocus=e=>e.target.select();
+  $("pdf").onclick=()=>window.print();
+  $("copy").onclick=async()=>{try{await navigator.clipboard.writeText(md);}catch(e){$("md").select();document.execCommand("copy");}
+    $("copy").textContent="Copied";setTimeout(()=>$("copy").textContent="Copy record",2000);};
+  $("dl").onclick=()=>{const b=new Blob([md],{type:"text/markdown"}),u=URL.createObjectURL(b),a=document.createElement("a");
+    a.href=u;a.download="adept-sitting-"+new Date().toISOString().slice(0,10)+".md";a.click();URL.revokeObjectURL(u);};
+  $("again").onclick=()=>{load();ST.view="setup";render();scrollTo(0,0);};
+}
+
+function record(){
+  const r=ST.res,L=[];
+  L.push("# ADEPT-15 format practice — record of sitting");
+  L.push(new Date().toLocaleDateString()+" · "+LENLABEL[ST.len]+" · "+r.answered+" items · "+ST.elapsedAt);
+  L.push("");
+  L.push("No score is produced. Aon's item parameters and Delta's key are not public; anything");
+  L.push("resembling a readiness number would be invented. Below is a description of the answers.");
+  L.push("");
+  L.push("Agreement: slightly "+r.dist.slightly+" · agree "+r.dist.moderately+" · strongly "+r.dist.strongly);
+  L.push("");
+  L.push("## Position by aspect (ipsative — relative to your own other aspects, not a level)");
+  L.push("| Aspect | Workstyle | Poles | Position | Picked low | Picked high | Split |");
+  L.push("|---|---|---|---|---|---|---|");
+  Object.keys(ASPECTS).forEach(a=>{const x=r.asp[a];if(!x)return;const A=ASPECTS[a];
+    L.push("| "+A.label+" | "+A.style+" | "+A.lo+" ↔ "+A.hi+" | "+x.position.toFixed(1)+" | "+x.lo+" | "+x.hi+" | "+(x.split?"yes":"")+" |");});
+  L.push("");
+  L.push("## Unflattering statements taken at strongly agree ("+r.emphatic.length+")");
+  if(!r.emphatic.length)L.push("None.");
+  r.emphatic.forEach(x=>L.push("- **"+pad(x.id)+"** \""+x.t+"\" — *"+x.a+"*"));
+  const st=stability(ST.hist.slice().reverse());
+  if(st){L.push("");L.push("## Stability across "+ST.hist.length+" sittings");
+    L.push("Mean movement per aspect: **"+st.meanSpread+"** points.");
+    L.push("");L.push("| Aspect | Range | Spread |");L.push("|---|---|---|");
+    st.rows.forEach(x=>L.push("| "+x.label+" | "+Math.min(...x.vals).toFixed(1)+" – "+Math.max(...x.vals).toFixed(1)+" | "+x.spread.toFixed(1)+" |"));}
+  L.push("");
+  L.push("## Full answer log");
+  L.push("| # | Pick | Agreement | Statement chosen | Aspect | Pole | Rejected | Aspect |");
+  L.push("|---|---|---|---|---|---|---|---|");
+  ST.pairs.forEach(p=>{const a=ST.ans[p.id];if(!a)return;
+    const c=a.c==="a"?p.a:p.b,o=a.c==="a"?p.b:p.a;
+    L.push("| "+p.id+" | "+a.c.toUpperCase()+" | "+a.i+" | "+c.t+" | "+ASPECTS[c.a].label+" | "+
+      (c.p===1?"high":"low")+" | "+o.t+" | "+ASPECTS[o.a].label+" |");});
+  return L.join("\n");
+}
+
+document.addEventListener("keydown",e=>{
+  if(ST.view!=="test"||e.target.tagName==="TEXTAREA")return;
+  const slice=ST.pairs.slice(ST.page*PER_PAGE,(ST.page+1)*PER_PAGE);
+  const nx=slice.find(p=>!ST.ans[p.id])||slice[slice.length-1], k=e.key.toLowerCase();
+  if(k==="a"||k==="b"){ST.ans[nx.id]={c:k,i:ST.ans[nx.id]?ST.ans[nx.id].i:"moderately"};
+    saveProgress();renderTest();e.preventDefault();}
+  else if(["1","2","3"].includes(k)){const t=slice.filter(p=>ST.ans[p.id]).pop();
+    if(t){ST.ans[t.id].i=INT[+k-1].k;saveProgress();renderTest();e.preventDefault();}}
+  else if(k==="enter"){const b=$("next");if(b&&!b.disabled){b.click();e.preventDefault();}}
+});
+
+load();render();
+</script>
+</body>
+</html>
